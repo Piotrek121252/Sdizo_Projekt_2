@@ -18,7 +18,12 @@ List_Graph::~List_Graph() = default;
 void List_Graph::load_graph(const std::string &path) {
     File_operator file_operator;
 
-    auto graph_data = file_operator.load_graph_from_file(path);
+    std::vector<std::vector<int>> graph_data;
+    graph_data = file_operator.load_graph_from_file(path);
+
+    //Jesli nie ma danych (wystąpił błąd) to przerywamy
+    if(graph_data.empty())
+        return;
 
     neighbour_list = std::vector<std::forward_list<std::pair<int,int>>>(graph_data[0][1]);
 
@@ -107,7 +112,7 @@ void List_Graph::dijksta_algorithm(bool show_results, int custom_start_vertex) {
         //Tworzymy iterator i relaksujemy
         auto it = neighbour_list[current_vertex.first].begin();
         while (it != neighbour_list[current_vertex.first].end()) {
-            if (distance[it->first] > distance[current_vertex.first] + it->second) {
+               if (distance[it->first] > distance[current_vertex.first] + it->second) {
                 distance[it->first] = distance[current_vertex.first] + it->second;
                 previous[it->first] = current_vertex.first;
                 vertex_queue.emplace(it->first, distance[it->first]);
@@ -117,6 +122,7 @@ void List_Graph::dijksta_algorithm(bool show_results, int custom_start_vertex) {
 
     }
     if(show_results) {
+        std::cout << "SPT Dijkstra lista:\n";
         std::cout << std::endl << "Start = " << starting_vertex << std::endl;
         std::cout << "End  Dist  Path" << std::endl;
 
@@ -198,7 +204,7 @@ void List_Graph::bellman_ford_algorithm(bool show_results, int custom_start_vert
             std::cout << "Graf zawiera cykl ujemny" << std::endl;
             return;
         }
-
+        std::cout << "SPT Bellman-Ford lista:\n";
         std::cout << std::endl << "Start = " << starting_vertex << std::endl;
         std::cout << "End  Dist  Path" << std::endl;
 
@@ -282,7 +288,7 @@ void List_Graph::prim_algorithm(bool show_results) {
         }
 
         int MST_sum = 0;
-        std::cout << "Krawedzie MST Prim na postaci listy:\n";
+        std::cout << "Krawedzie MST Prim lista:\n";
         std::cout << "Edge    Weight\n";
         for (int i = 0; i < vertex_amount; i++) {
             //nie wypisujemy dla poczatkowego, poniewaz nie ma poprzednika (wartosc -1)
@@ -375,7 +381,7 @@ void List_Graph::kruskal_algorithm(bool show_results) {
             }});
 
         int MST_sum = 0;
-        std::cout << "Krawedzie MST Kruskal listowo:\n";
+        std::cout << "Krawedzie MST Kruskal lista:\n";
         std::cout << "Edge    Weight\n";
         for (int i = 0; i < MST.size(); i++) {
 
@@ -385,5 +391,20 @@ void List_Graph::kruskal_algorithm(bool show_results) {
         std::cout << "\nMST = " << MST_sum << std::endl;
     }
 
+}
+
+bool List_Graph::look_for_negative_edge_weight() {
+
+    for(int i =0; i < vertex_amount; i++) {
+        auto it = neighbour_list[i].begin();
+        while(it != neighbour_list[i].end()) {
+            if(it->second < 0) {
+                std::cout << "Graf zawiera krawedz o ujemnej wartosci." << std::endl;
+                return true;
+            }
+            it++;
+        }
+    }
+        return false;
 }
 

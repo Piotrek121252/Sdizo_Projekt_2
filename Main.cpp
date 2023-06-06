@@ -13,7 +13,7 @@ void minimal_spanning_tree_menu() {
 
     Matrix_Graph* matrix_graph = new Matrix_Graph(false);
     List_Graph* list_graph = new List_Graph(false);
-    bool is_loaded = false;
+
 
     std::string path;
 
@@ -21,11 +21,11 @@ void minimal_spanning_tree_menu() {
         std::cout << "\nProblem minimalnego drzewa rozpinajacego:" << std::endl;
 
         std::cout << "1. Wczytaj graf z pliku\n"
-                  << "2. Wyswietl graf w formie macierzowej i listy sasiedztwa\n"
-                  << "3. Algorytm Prima na postaci macierzowej\n"
-                  << "4. Algorytm Prima na postaci listowej\n"
-                  << "5. Algorytm Kruskala na postaci macierzowej\n"
-                  << "6. Algorytm Kruskala na postaci listowej\n"
+                  << "2. Wyswietl graf w formie macierzy i listy sasiadow\n"
+                  << "3. Algorytm Prima na postaci macierzy sasiedztwa\n"
+                  << "4. Algorytm Prima na postaci listy sasiadow\n"
+                  << "5. Algorytm Kruskala na postaci macierzy sasiedztwa\n"
+                  << "6. Algorytm Kruskala na postaci listy sasiadow\n"
                   << "0. Wyjdz z menu\n\n"
                   << "Wybierz opcje:";
 
@@ -36,38 +36,40 @@ void minimal_spanning_tree_menu() {
         switch (choice) {
             case '1':   std::cout << "Podaj sciezke do pliku: " << std::endl;
                         std::cin >> path;
-                        if(is_loaded) {
-                        delete matrix_graph;
-                        delete list_graph;
-                        matrix_graph = new Matrix_Graph(false);
-                        list_graph = new List_Graph(false);
+                        if(matrix_graph->is_loaded) {
+                            delete matrix_graph;
+                            matrix_graph = new Matrix_Graph(false);
                         }
+                        if(list_graph->is_loaded) {
+                            delete list_graph;
+                            list_graph = new List_Graph(false);
+                        }
+
                         matrix_graph->load_graph(path);
                         list_graph->load_graph(path);
-                        is_loaded = true;
                         break;
             case '2':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                              matrix_graph->display_graph();
                              list_graph->display_graph();
                         } else
-                            std::cout << "Graf nie zostal wczytany.";
+                            std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '3':   if(is_loaded) {
+            case '3':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                             matrix_graph->prim_algorithm(true);
                         } else
                             std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '4':   if(is_loaded) {
+            case '4':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                             list_graph->prim_algorithm(true);
                         } else
                             std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '5':   if(is_loaded) {
+            case '5':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                             matrix_graph->kruskal_algorithm(true);
                         } else
                             std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '6':   if(is_loaded) {
+            case '6':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                             list_graph->kruskal_algorithm(true);
                         } else
                             std::cout << "Graf nie zostal wczytany.\n";
@@ -95,14 +97,14 @@ void shortest_path_menu() {
     do {
         std::cout << "\nProblem najkrotszej drogi w grafie:" << std::endl;
 
-        std::cout << "1. Wczytaj graf z pliku.\n"
-                  << "2. Wyswietl graf w formie macierzowej i listy sasiedztwa.\n"
-                  << "3. Algorytm Dijkstry na grafie na postaci macierzowej.\n"
-                  << "4. Algorytm Dijkstry na grafie w postaci listy sasiedztwa.\n"
-                  << "5. Algorytm Bellmana-Forda na postaci macierzowej.\n"
-                  << "6. Algorytm Bellmana-Forda na postaci listy sasiedztwa.\n"
+        std::cout << "1. Wczytaj graf z pliku\n"
+                  << "2. Wyswietl graf w formie macierzy i listy sasiadow\n"
+                  << "3. Algorytm Dijkstry na grafie na postaci macierzy sasiedztwa\n"
+                  << "4. Algorytm Dijkstry na grafie w postaci listy sasiadow\n"
+                  << "5. Algorytm Bellmana-Forda na postaci macierzy sasiedztwa\n"
+                  << "6. Algorytm Bellmana-Forda na postaci listy sasiadow\n"
                   << "0. Wyjdz z menu\n\n"
-                  << "Wybierz opcje:";
+                  << "Wybierz opcje: ";
 
         std::cin >> choice;
         std::cin.clear();
@@ -111,38 +113,42 @@ void shortest_path_menu() {
         switch (choice) {
             case '1':    std::cout << "Podaj sciezke do pliku: " << std::endl;
                          std::cin >> path;
-                         if(is_loaded) {
-                             delete matrix_graph;
-                             delete list_graph;
-                             matrix_graph = new Matrix_Graph(true);
-                             list_graph = new List_Graph(true);
+                         if(matrix_graph->is_loaded) {
+                            delete matrix_graph;
+                            matrix_graph = new Matrix_Graph(true);
                          }
+                         if(list_graph->is_loaded) {
+                            delete list_graph;
+                            list_graph = new List_Graph(true);
+                         }
+
                          matrix_graph->load_graph(path);
                          list_graph->load_graph(path);
-                         is_loaded = true;
                          break;
             case '2':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                            matrix_graph->display_graph();
                            list_graph->display_graph();
                         } else
-                            std::cout << "Graf nie zostal wczytany.";
+                            std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '3':   if(is_loaded) {
-                        matrix_graph->dijksta_algorithm(true);
+            case '3':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
+                        if(!matrix_graph->look_for_negative_edge_weight())
+                            matrix_graph->dijksta_algorithm(true);
                         } else
                             std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '4':   if(is_loaded) {
+            case '4':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
+                        if(!list_graph->look_for_negative_edge_weight())
                             list_graph->dijksta_algorithm(true);
                         } else
                         std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '5':   if(is_loaded) {
+            case '5':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                             matrix_graph->bellman_ford_algorithm(true);
                         } else
                             std::cout << "Graf nie zostal wczytany.\n";
                         break;
-            case '6':   if(is_loaded) {
+            case '6':   if(matrix_graph->is_loaded && list_graph->is_loaded) {
                             list_graph->bellman_ford_algorithm(true);
                         } else
                             std::cout << "Graf nie zostal wczytany.\n";

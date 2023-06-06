@@ -49,17 +49,20 @@ std::vector<std::vector<int>> File_operator::load_graph_from_file(const std::str
                     graph_data.push_back(std::vector<int> {temp_tab[0], temp_tab[1], temp_tab[2]});
                 } else {
                     std::cout << "File error - READ EDGE" << std::endl;
+                    graph_data = { };
                     break;
                 }
             }
         } else {
             std::cout << "File error - READ INFO" << std::endl;
+            graph_data = { };
         }
 
         file.close();
 
     } else {
         std::cout << "File error - OPEN" << std::endl;
+        graph_data = { };
     }
 
     return graph_data;

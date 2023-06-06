@@ -33,5 +33,6 @@ public:
 
     void load_graph(const std::string &path);
 
+    bool look_for_negative_edge_weight();
 };
 

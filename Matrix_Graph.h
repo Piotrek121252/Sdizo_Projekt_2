@@ -31,6 +31,8 @@ public:
     void kruskal_algorithm(bool show_results);
 
     void load_graph(const std::string &path);
+
+    bool look_for_negative_edge_weight();
 };
 
 

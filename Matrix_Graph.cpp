@@ -20,7 +20,12 @@ Matrix_Graph::~Matrix_Graph() = default;
 void Matrix_Graph::load_graph(const std::string &path) {
     File_operator file_operator;
 
-    auto graph_data = file_operator.load_graph_from_file(path);
+    std::vector<std::vector<int>> graph_data;
+    graph_data = file_operator.load_graph_from_file(path);
+
+    //Jeśli nie ma danych (wystąpił błąd) to przerywamy
+    if(graph_data.empty())
+        return;
 
     //Najpierw wiersze potem kolumny
     //Wypełniamy macierz sąsiedztwa INT_MAX oznacza nieskończoność
@@ -144,6 +149,7 @@ void Matrix_Graph::dijksta_algorithm(bool show_results, int custom_start_vertex)
     }
 
     if(show_results) {
+        std::cout << "SPT Dijkstra macierz:\n";
         std::cout << std::endl << "Start = " << starting_vertex << std::endl;
         std::cout << "End  Dist  Path" << std::endl;
 
@@ -225,7 +231,7 @@ void Matrix_Graph::bellman_ford_algorithm(bool show_results, int custom_start_ve
             std::cout << "Graf zawiera cykl ujemny" << std::endl;
             return;
         }
-
+        std::cout << "SPT Bellman-Ford macierz:\n";
         std::cout << std::endl << "Start = " << starting_vertex << std::endl;
         std::cout << "End  Dist  Path" << std::endl;
 
@@ -308,7 +314,7 @@ void Matrix_Graph::prim_algorithm(bool show_results) {
         }
 
         int MST_sum = 0;
-        std::cout << "Krawedzie MST Prim macierzowo:\n";
+        std::cout << "Krawedzie MST Prim macierz:\n";
         std::cout << "Edge    Weight\n";
         for (int i = 0; i < vertex_amount; i++) {
             //nie wypisujemy dla poczatkowego, poniewaz nie ma poprzednika (wartosc -1)
@@ -405,7 +411,7 @@ void Matrix_Graph::kruskal_algorithm(bool show_results) {
          }});
 
         int MST_sum = 0;
-        std::cout << "Krawedzie MST Kruskal macierzowo:\n";
+        std::cout << "Krawedzie MST Kruskal macierz:\n";
         std::cout << "Edge    Weight\n";
         for (int i = 0; i < MST.size(); i++) {
 
@@ -414,6 +420,19 @@ void Matrix_Graph::kruskal_algorithm(bool show_results) {
         }
         std::cout << "\nMST = " << MST_sum << std::endl;
     }
+}
+
+bool Matrix_Graph::look_for_negative_edge_weight() {
+
+    for(int i = 0; i < vertex_amount; i++) {
+        for(int j = 0; j < vertex_amount; j++){
+            if(matrix[i][j] < 0) {
+                std::cout << "Graf zawiera krawedz o ujemnej wartosci." << std::endl;
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 
